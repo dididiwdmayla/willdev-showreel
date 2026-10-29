@@ -10,11 +10,11 @@
 
 | Arquivo | Duração | Tamanho |
 | :- | :- | :- |
-| `renders/willdev-showreel-neutral-en.mp4` | 35,0 s | ver seção 7 |
-| `renders/willdev-showreel-fiverr-en.mp4` | 35,0 s | ver seção 7 |
+| `renders/willdev-showreel-neutral-en.mp4` | 35,000 s | 17,3 MB |
+| `renders/willdev-showreel-fiverr-en.mp4` | 35,000 s | 17,3 MB |
 | `renders/thumbnail-1920x1080.png`, `renders/thumbnail-1280x720.png` | — | — |
 
-1920×1080, 30 fps, H.264 (yuv420p) + AAC 192 kbps, MP4 com `+faststart`.
+1920×1080, 30 fps, 1050 quadros, H.264 High (yuv420p, BT.709, faixa TV) + AAC 192 kbps estéreo 48 kHz, MP4 com `+faststart`.
 
 - Skills oficiais do Remotion instaladas em `.claude/skills/` (via `npx skills add remotion-dev/skills`, sem precisar do caminho manual).
 - Scripts: `npm run render` (qualquer plataforma × idioma), `npm run capture`, `npm run logo`, `scripts/analyze-audio.py`, `scripts/qa-ocr.py`.
@@ -79,9 +79,19 @@ O site da VG se identifica como "VG Construção" (singular); foi usado esse nom
 - **Navegador.** Já havia Chromium e Playwright 1.63 instalados (`/opt/pw-browsers`), então `@sparticuz/chromium` não foi necessário. O Remotion usa o headless shell do Playwright (`remotion.config.ts` detecta sozinho; `REMOTION_BROWSER` sobrescreve).
 - **Fonte do multímetro.** A DSEG7 da Hard Eletric vem do jsDelivr (bloqueado); a captura serve a mesma fonte a partir do pacote npm `dseg`.
 - **Repositórios de origem.** Os seis estavam anexados à sessão, inclusive o InterativMind (privado). Foram usados só para leitura. O `npm install` reescreveu o `package-lock.json` da InterativMind; a alteração foi desfeita (`git restore`) e nenhum repositório de origem tem mudança, commit ou push.
-- **Push.** Tamanho total adicionado ~65 MB (clipes ~22 MB, dois MP4 ~41 MB, thumbnails, skills); nenhum arquivo passa de 25 MB, então o push normal do GitHub comporta.
+- **Push.** ~61 MB adicionados (clipes 22 MB, dois MP4 de 17,3 MB, thumbnails, skills); nenhum arquivo passa de 10 MB e o push foi aceito sem deixar nada de fora.
+- **Imagem fixa no Remotion.** O render de still não posiciona `<Video>` no quadro exato (cai no keyframe mais próximo); a thumbnail usa quadros extraídos com FFmpeg (`public/stills/`).
 - **Faixa.** Havia um único arquivo em `assets/audio/` ("Lucky Draw", Suno), renomeado para `lucky-draw.m4a`. O plano do Suno com direito comercial é informação do usuário, não verificada aqui.
 
 ## 7. Verificação
 
-Ver a seção preenchida após o render final, logo abaixo.
+Feita no material renderizado, não só no build.
+
+- **Quadros examinados.** Quadros extraídos com FFmpeg no meio de cada cena e durante cada transição (0,5 s, 6,6 s, 12,7 s, 18,8 s, 22,9 s, 29 s…) e revisados um a um: legibilidade, margens seguras (texto a ≥ 112 px das bordas laterais), nada cortado, cada transição completa sem quadro preto ou vazio. Foram corrigidos nessa revisão: máscara do logo vazando no primeiro quadro, Raio-X e trilho pequenos demais, a seção anterior aparecendo no início do quadro elétrico, a faixa do cabeçalho no recorte do multímetro, a lista de serviços estourando a margem direita e os cards de serviço da VG sumindo (eram links de WhatsApp e a regra de captura os escondia inteiros).
+- **Sincronia.** Envelope de áudio medido no MP4: drop aos 0,50 s, pausa da faixa de 14,8 a 16,8 s (o quadro elétrico religa aos 16,78 s, na volta do bumbo), breakdown aos 29 s com o encerramento, fade-out de 1,5 s até o silêncio no último quadro.
+- **Especificações.** `ffprobe`: 1920×1080, 30/1 fps, 1050 quadros de vídeo, duração do contêiner 35,000 s, `moov` antes de `mdat` (faststart), 17,3 MB por arquivo (limite pedido: 40 MB; Fiverr: 50 MB, 75 s).
+- **Contato na versão Fiverr, quadro a quadro.** `scripts/qa-ocr.py` decodifica os **1050 quadros** e lê todo o texto por OCR, procurando telefone, e-mail, URL e menções a WhatsApp/Instagram/e-mail: **0 ocorrências** na versão Fiverr e 0 também nos 1050 quadros da neutra (relatórios em `renders/*.ocr.json`, com todas as linhas lidas). O mesmo teste encontrou, numa versão anterior, o parágrafo "Peça o orçamento direto pelo WhatsApp" da VG; a captura passou a esconder textos que citam canais de contato. Durante as capturas o texto visível de cada página também é varrido (telefone, e-mail, URL, canais), sem ocorrências. A moldura de navegador tem a barra de endereço vazia.
+- **Sem métricas do Fiverr.** Nenhum selo de nível, estrela ou avaliação; o nome da plataforma só aparece no CTA final da versão Fiverr ("Message me here on Fiverr"), que mantém a conversa dentro dela.
+- **Serviços comerciais.** O vídeo nomeia setor e tipo de cada trabalho (dois clientes reais), mostra um site empresarial responsivo e termina com a lista de serviços e o convite.
+- **Código.** `tsc --noEmit` e ESLint (config do Remotion) sem erros nem avisos.
+- **Repositórios de origem.** `git status` limpo nos cinco, sem commits novos.
