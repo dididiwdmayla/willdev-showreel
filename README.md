@@ -11,6 +11,29 @@ Vídeo promocional de 35 s da WillDev, feito em código: **Remotion** (React + T
 
 1920×1080, 30 fps, H.264 + AAC, MP4 com `+faststart`, 35,0 s.
 
+## Galeria do Fiverr (3 imagens)
+
+Três imagens estáticas de 1280×769 (PNG RGB, sem alfa), feitas em React + SVG como `<Still>` do Remotion, com a mesma identidade do vídeo:
+
+| Imagem | Arquivo |
+| :- | :- |
+| Impacto comercial | `gallery/out/willdev-custom-websites.png` |
+| Projetos reais | `gallery/out/willdev-business-projects.png` |
+| Direção criativa | `gallery/out/willdev-creative-design.png` |
+| Folha de contato e teste em 300 px | `gallery/out/contact-sheet.png`, `gallery/out/thumbnails-300.png` |
+
+Um comando regenera as três, a folha de contato e o teste em 300 px, e confere tamanho, modo RGB e limite de 10 palavras:
+
+```bash
+npm run gallery -- --locale=en
+```
+
+```bash
+npm run gallery -- --locale=pt-BR --ocr
+```
+
+`--ocr` também lê cada imagem por OCR atrás de telefone, e-mail, URL, OAB/CNPJ e métricas do Fiverr. Os textos ficam em `gallery/copy/` (`en.ts`, `pt-BR.ts`) e as posições no topo de cada composição (`gallery/CustomWebsites.tsx`, `BusinessProjects.tsx`, `CreativeDesign.tsx`). Trocar texto ou idioma não exige recaptura. Para refazer as capturas, com os sites rodando localmente: `npm run gallery:capture`. Detalhes em `gallery/REPORT.md`.
+
 ## Gerar uma nova versão
 
 Pré-requisito: Node 22 e `npm install` uma vez.
@@ -83,12 +106,13 @@ Cada captura avança o relógio da página 1/30 s por quadro (relógio falso do 
 assets/brand/        referências da marca + willdev-logo.svg (logo reconstruído em vetor)
 assets/audio/        trilha (Suno)
 capture/             scripts Playwright de captura quadro a quadro
+gallery/             imagens da galeria do Fiverr (composições, textos, capturas, saída)
 footage/             clipes intermediários capturados (versionados)
 config/              branding, plataformas, timing e a análise da trilha
 locales/             textos por idioma
 scripts/             render.mjs, analyze-audio.py, build-logo.mjs
 src/                 projeto Remotion (cenas, componentes, logo animado)
-public/              links para footage/ e assets/audio/ + quadros fixos da thumbnail
+public/              links para footage/, assets/audio/ e gallery/captures/ + quadros fixos da thumbnail
 renders/             MP4 e thumbnails finais
 .claude/skills/      skills oficiais do Remotion para o Claude Code
 ```

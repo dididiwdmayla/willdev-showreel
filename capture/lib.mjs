@@ -32,7 +32,7 @@ export const HIDE_CONTACT_CSS = `
 `;
 
 /** Text blocks that point to an outside channel are hidden too (a site paragraph saying "ask on WhatsApp"). */
-const CONTACT_WORDS = /whats\s?app|instagram|e-?mail|telefone|ligue|liga pra/i;
+const CONTACT_WORDS = /whats\s?app|instagram|e-?mail|telefone|ligue|liga pra|\bOAB\b|CNPJ|\bCPF\b|\bCEP\b|\bRua\s|\bAv\.|\bAvenida\s/i;
 
 export async function hideContactText(page) {
   await page.evaluate((src) => {
