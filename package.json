@@ -37,12 +37,14 @@
     "dev": "remotion studio",
     "build": "remotion bundle",
     "upgrade": "remotion upgrade",
-    "lint": "eslint src gallery/*.tsx gallery/*.ts gallery/copy && tsc",
+    "lint": "eslint src gallery/*.tsx gallery/*.ts gallery/copy portfolio/*.tsx portfolio/*.ts && tsc",
     "logo": "node --experimental-strip-types --no-warnings scripts/build-logo.mjs",
     "capture": "node capture/run.mjs",
     "render": "node --experimental-strip-types --no-warnings scripts/render.mjs",
     "gallery": "node --experimental-strip-types --no-warnings gallery/render.mjs",
-    "gallery:capture": "node gallery/capture.mjs"
+    "gallery:capture": "node gallery/capture.mjs",
+    "portfolio": "node --experimental-strip-types --no-warnings portfolio/render.mjs",
+    "portfolio:capture": "node portfolio/capture.mjs"
   },
   "allowScripts": {
     "esbuild": false

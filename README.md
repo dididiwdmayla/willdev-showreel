@@ -34,6 +34,16 @@ npm run gallery -- --locale=pt-BR --ocr
 
 `--ocr` também lê cada imagem por OCR atrás de telefone, e-mail, URL, OAB/CNPJ e métricas do Fiverr. Os textos ficam em `gallery/copy/` (`en.ts`, `pt-BR.ts`) e as posições no topo de cada composição (`gallery/CustomWebsites.tsx`, `BusinessProjects.tsx`, `CreativeDesign.tsx`). Trocar texto ou idioma não exige recaptura. Para refazer as capturas, com os sites rodando localmente: `npm run gallery:capture`. Detalhes em `gallery/REPORT.md`.
 
+## Capas do portfólio do Fiverr
+
+Cinco capas de projeto (Hard Eletric, VG Construção, Lancheria Meia-Noite, interativMind, Advocacia Demo), no mesmo sistema visual, a partir de capturas reais. As capas ficam em `portfolio/out/` (2560×1538), com cópias em `portfolio/out/1280/` e a folha de contato em `portfolio/out/contact-sheet.png`.
+
+```bash
+npm run portfolio -- --ocr
+```
+
+Textos, cores e capturas por projeto: `portfolio/projects.ts`; composição de cada capa: `portfolio/layouts.tsx`; lógica visual e verificações: `portfolio/NOTE.md`. Recapturar: `npm run portfolio:capture`.
+
 ## Gerar uma nova versão
 
 Pré-requisito: Node 22 e `npm install` uma vez.
@@ -107,6 +117,7 @@ assets/brand/        referências da marca + willdev-logo.svg (logo reconstruíd
 assets/audio/        trilha (Suno)
 capture/             scripts Playwright de captura quadro a quadro
 gallery/             imagens da galeria do Fiverr (composições, textos, capturas, saída)
+portfolio/           capas do portfólio do Fiverr (capa, projetos, capturas, saída)
 footage/             clipes intermediários capturados (versionados)
 config/              branding, plataformas, timing e a análise da trilha
 locales/             textos por idioma

@@ -6,33 +6,14 @@
 //   node gallery/capture.mjs              all captures
 //   node gallery/capture.mjs vg-desktop   only the named ones
 
-import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { FrameWriter, launch, openPage } from '../capture/lib.mjs';
 import { dsegRoute, sources } from '../capture/sources.mjs';
+import { HIDE_DEMO_BANNER, openStill, PHONE, runShots, shoot as shootTo, VG_CSS } from '../capture/still.mjs';
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), 'captures');
-const DESKTOP = { width: 1440, height: 900 };
-const PHONE = { viewport: { width: 390, height: 844 }, isMobile: true };
-const HIDE_DEMO_BANNER = `aside.border-b { display: none !important; }`;
-// VG: service cards are WhatsApp links that only name the service (kept); the scroll-progress dot is chrome.
-const VG_CSS = `a.service-card { visibility: visible !important; } .scroll-progress { display: none !important; }`;
-
-/** Screenshot + text scan. `clip` is in CSS pixels. */
-async function shoot(page, name, clip) {
-  const scan = new FrameWriter(`gallery-${name}`, { clip });
-  await scan.scan(page);
-  const ok = scan.report();
-  fs.mkdirSync(OUT, { recursive: true });
-  await page.screenshot({ path: path.join(OUT, `${name}.png`), clip, animations: 'allow', caret: 'hide' });
-  console.log(`  -> gallery/captures/${name}.png${ok ? '' : '  (check the warnings above)'}`);
-}
-
-async function open(browser, url, opts = {}) {
-  const page = await openPage(browser, { url, scale: 2, viewport: DESKTOP, ...opts });
-  return page;
-}
+const shoot = (page, name, clip) => shootTo(page, OUT, name, clip);
+const open = openStill;
 
 const SHOTS = {
   /** Raio-X on a wide screen: the exploded stack with every callout. */
@@ -112,12 +93,4 @@ const SHOTS = {
   },
 };
 
-const wanted = process.argv.slice(2);
-const names = wanted.length ? wanted : Object.keys(SHOTS);
-const browser = await launch();
-for (const name of names) {
-  if (!SHOTS[name]) throw new Error(`Unknown capture "${name}". Known: ${Object.keys(SHOTS).join(', ')}`);
-  console.log(`\n▶ ${name}`);
-  await SHOTS[name](browser);
-}
-await browser.close();
+await runShots(SHOTS, process.argv.slice(2));

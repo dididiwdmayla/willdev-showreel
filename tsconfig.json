@@ -24,6 +24,7 @@
     "src",
     "config",
     "locales",
-    "gallery"
+    "gallery",
+    "portfolio"
   ]
 }
