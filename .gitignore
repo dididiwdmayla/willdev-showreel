@@ -4,7 +4,7 @@ dist
 .env
 
 # Remotion scratch output
-out
+/out
 
 # Frame-by-frame PNG sequences (re-created by `npm run capture`; the encoded clips live in footage/)
 capture/frames/
