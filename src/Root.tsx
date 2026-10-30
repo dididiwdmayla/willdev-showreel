@@ -7,6 +7,7 @@ import { CreativeDesign } from '../gallery/CreativeDesign';
 import { CustomWebsites } from '../gallery/CustomWebsites';
 import { galleryLocaleSchema } from '../gallery/schema';
 import { Cover, coverSchema } from '../portfolio/Cover';
+import { ContraCover, contraSchema } from '../contra/ContraCover';
 
 // One registration per deliverable; any platform/locale pair can also be rendered
 // from "Showreel" with props (see scripts/render.mjs and README.md).
@@ -45,6 +46,9 @@ export const RemotionRoot: React.FC = () => {
       <Still id="Portfolio-Lancheria" component={Cover} schema={coverSchema} width={1280} height={769} defaultProps={{ file: 'portfolio-lancheria-meia-noite' }} />
       <Still id="Portfolio-InterativMind" component={Cover} schema={coverSchema} width={1280} height={769} defaultProps={{ file: 'portfolio-interativmind' }} />
       <Still id="Portfolio-Advocacia" component={Cover} schema={coverSchema} width={1280} height={769} defaultProps={{ file: 'portfolio-advocacia-demo' }} />
+      {/* Contra service cover, 4:3 (contra/, rendered by `npm run contra`). */}
+      <Still id="Contra-Cover" component={ContraCover} schema={contraSchema} width={1600} height={1200} defaultProps={{ variant: 'main' as const }} />
+      <Still id="Contra-Cover-Alt" component={ContraCover} schema={contraSchema} width={1600} height={1200} defaultProps={{ variant: 'alt' as const }} />
     </>
   );
 };

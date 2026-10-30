@@ -34,6 +34,20 @@ npm run gallery -- --locale=pt-BR --ocr
 
 `--ocr` também lê cada imagem por OCR atrás de telefone, e-mail, URL, OAB/CNPJ e métricas do Fiverr. Os textos ficam em `gallery/copy/` (`en.ts`, `pt-BR.ts`) e as posições no topo de cada composição (`gallery/CustomWebsites.tsx`, `BusinessProjects.tsx`, `CreativeDesign.tsx`). Trocar texto ou idioma não exige recaptura. Para refazer as capturas, com os sites rodando localmente: `npm run gallery:capture`. Detalhes em `gallery/REPORT.md`.
 
+## Capa do serviço no Contra (4:3)
+
+Capa de 1600×1200 para o serviço "Custom Websites with Premium Design & Interactive Animations", em duas variantes:
+- `contra/out/contra-service-cover-willdev.png`: o Raio-X da Lancheria no computador e a Hard Eletric no celular;
+- `contra/out/contra-service-cover-willdev-alt.png`: headline em uma linha, a Hard Eletric no computador e o Raio-X no celular.
+
+As duas lado a lado ficam em `contra/out/preview.png`. Para regenerar:
+
+```bash
+npm run contra -- --ocr
+```
+
+Textos e capturas ficam em `contra/config.ts`; as posições, no topo de `contra/ContraCover.tsx`.
+
 ## Capas do portfólio do Fiverr
 
 Cinco capas de projeto (Hard Eletric, VG Construção, Lancheria Meia-Noite, interativMind, Advocacia Demo), no mesmo sistema visual, a partir de capturas reais. As capas ficam em `portfolio/out/` (2560×1538), com cópias em `portfolio/out/1280/` e a folha de contato em `portfolio/out/contact-sheet.png`.
@@ -118,6 +132,7 @@ assets/audio/        trilha (Suno)
 capture/             scripts Playwright de captura quadro a quadro
 gallery/             imagens da galeria do Fiverr (composições, textos, capturas, saída)
 portfolio/           capas do portfólio do Fiverr (capa, projetos, capturas, saída)
+contra/              capa do serviço no Contra (1600×1200, duas variantes)
 footage/             clipes intermediários capturados (versionados)
 config/              branding, plataformas, timing e a análise da trilha
 locales/             textos por idioma
