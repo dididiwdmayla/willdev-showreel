@@ -9,6 +9,9 @@ import { STEP_STARTS, orderTapFrames } from './scenes/ingarandi';
 
 type Hit = { at: number; sfx: string; gain: number };
 
+/** All effects together, relative to the music (the mix is normalised to -14 LUFS afterwards, in render.mjs). */
+export const SFX_GAIN = 0.62;
+
 export function soundtrack(a: Aspect): Hit[] {
   const lensOpen = (v: Variant, trim: number) => {
     if (desktop(a)) {
@@ -19,8 +22,8 @@ export function soundtrack(a: Aspect): Hit[] {
     return mobileMeta(v).pointer[0].frame - trim;
   };
   const hits: Hit[] = [
-    { at: 0, sfx: 'impact', gain: 0.55 },
-    { at: 40, sfx: 'whoosh', gain: 0.35 },
+    { at: 0, sfx: 'impact', gain: 0.4 },
+    { at: SCENES.lens.from - 6, sfx: 'whoosh', gain: 0.35 },
     { at: lensOpen('chapa', 0), sfx: 'lens', gain: 0.5 },
   ];
   if (!desktop(a)) hits.push({ at: mobileMeta('chapa').pointer[1].frame, sfx: 'lens', gain: 0.4 });
@@ -36,8 +39,8 @@ export function soundtrack(a: Aspect): Hit[] {
   const paid = STEP_STARTS[ORDER_STEPS.length - 1];
   hits.push({ at: SCENES.order.from + paid, sfx: 'confirm', gain: 0.6 });
   hits.push({ at: SCENES.coin.from + 2, sfx: 'spin', gain: 0.45 });
-  hits.push({ at: SCENES.coin.from + 24, sfx: 'coin', gain: 0.75 });
-  hits.push({ at: SCENES.coin.from + 30, sfx: 'impact', gain: 0.3 });
+  hits.push({ at: SCENES.coin.from + 22, sfx: 'coin', gain: 0.75 });
+  hits.push({ at: SCENES.coin.from + 23, sfx: 'impact', gain: 0.25 });
   return hits;
 }
 
@@ -48,13 +51,20 @@ export const Soundtrack: React.FC<{ a: Aspect; music?: string; musicStart?: numb
     <Audio
       src={staticFile(music)}
       trimBefore={Math.round(musicStart * FPS)}
-      volume={(f) =>
-        interpolate(f, [0, 2, DURATION - MUSIC.fadeOut, DURATION], [0, MUSIC.gain, MUSIC.gain, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
-      }
+      volume={(f) => {
+        // Gentle dip under the purchase; back up for the coin and the signature.
+        const O = SCENES.order;
+        const duck = interpolate(f, [O.from + 4, O.from + 14, SCENES.coin.from - 6, SCENES.coin.from + 2], [1, MUSIC.duck, MUSIC.duck, 1], {
+          extrapolateLeft: 'clamp',
+          extrapolateRight: 'clamp',
+        });
+        const fade = interpolate(f, [0, 1, DURATION - MUSIC.fadeOut, DURATION], [0, 1, 1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+        return MUSIC.gain * duck * fade;
+      }}
     />
     {soundtrack(a).map((h, i) => (
       <Sequence key={i} from={Math.max(0, h.at)} durationInFrames={60} layout="none">
-        <Audio src={staticFile(`sfx/${h.sfx}.wav`)} volume={h.gain} />
+        <Audio src={staticFile(`sfx/${h.sfx}.wav`)} volume={Math.min(1, h.gain * SFX_GAIN)} />
       </Sequence>
     ))}
   </>

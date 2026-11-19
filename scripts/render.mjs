@@ -101,7 +101,7 @@ function renderThumbnails(locale) {
 
 /** Restaurant commercial: one render per locale × aspect, audio limited to -1.5 dBFS and trimmed under 13.6 s. */
 function renderRestaurant() {
-  const dir = path.join(OUT, 'restaurant');
+  const dir = path.join(OUT, args.preview ? 'restaurant/preview' : 'restaurant');
   fs.mkdirSync(dir, { recursive: true });
   const aspects = args.aspect ? [args.aspect] : ['16x9', '1x1', '9x16'];
   const list = args.locale ? [args.locale] : Object.keys(locales);
@@ -109,7 +109,7 @@ function renderRestaurant() {
   for (const locale of list) {
     if (!locales[locale]) throw new Error(`Unknown locale "${locale}"`);
     for (const aspect of aspects) {
-      const name = `willdev-chapa-ingarandi-${aspect}-${locale.toLowerCase()}.mp4`;
+      const name = `${args.preview ? 'preview-' : ''}willdev-chapa-ingarandi-${aspect}-${locale.toLowerCase()}.mp4`;
       const tmp = path.join(dir, `.tmp-${name}`);
       const final = path.join(dir, name);
       const props = { locale, aspect, mute: Boolean(args.mute) };
@@ -122,7 +122,15 @@ function renderRestaurant() {
         '--codec=h264', `--crf=${Number(args.crf ?? 16)}`, '--pixel-format=yuv420p', '--color-space=bt709',
         '--audio-codec=aac', '--audio-bitrate=192k', '--x264-preset=slow',
       ]);
-      const audio = args.mute ? ['-an'] : ['-af', 'alimiter=limit=0.84:level=false,atrim=0:13.58', '-c:a', 'aac', '-b:a', '192k'];
+      // Loudness: measure the rendered mix, bring it to -14 LUFS (social platforms), limit samples to -3 dBFS (true peak stays under -1 dBTP after AAC).
+      let gain = 0;
+      if (!args.mute) {
+        const r = spawnSync(cmd, [...pre, '-hide_banner', '-i', tmp, '-af', 'ebur128', '-vn', '-f', 'null', '-'], { cwd: ROOT, encoding: 'utf8' });
+        const m = [...String(r.stderr).matchAll(/I:\s+(-?[\d.]+) LUFS/g)].pop();
+        if (m) gain = Math.max(-6, Math.min(8, -14 - Number(m[1])));
+        console.log(`  loudness ${m ? m[1] : '?'} LUFS → gain ${gain.toFixed(1)} dB`);
+      }
+      const audio = args.mute ? ['-an'] : ['-af', `volume=${gain.toFixed(2)}dB,alimiter=limit=0.708:level=false,atrim=0:13.58`, '-c:a', 'aac', '-b:a', '192k'];
       run(cmd, [...pre, '-y', '-v', 'error', '-i', tmp, '-c:v', 'copy', ...audio, '-movflags', '+faststart', final]);
       fs.rmSync(tmp, { force: true });
       console.log(`  ${path.relative(ROOT, final)}: ${(fs.statSync(final).size / 1e6).toFixed(1)} MB`);

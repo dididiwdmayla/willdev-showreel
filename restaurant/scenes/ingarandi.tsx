@@ -25,12 +25,12 @@ export const Bridge: React.FC<{ a: Aspect }> = ({ a }) => {
   // The Ingarandi burger (its own transparent asset) flies in, then settles behind the phone.
   const end = { x: phone.x + phone.w * 0.5, y: phone.y + phone.h * 0.55 };
   const mid = a === '9x16' ? { x: width * 0.5, y: height * 0.62 } : { x: width * 0.66, y: height * 0.52 };
-  const settle = ramp(f, 15, 14, ease.inOut);
+  const settle = ramp(f, 21, 14, ease.inOut);
   const pos = { x: mix(width + 500, mid.x, fly), y: mix(height * 0.75, mid.y, fly) };
   const px = mix(pos.x, end.x, settle);
   const py = mix(pos.y, end.y, settle);
   const size = (a === '9x16' ? 860 : a === '1x1' ? 620 : 820) * mix(0.7 + 0.3 * fly, 1.25, settle);
-  const opacity = 1 - ramp(f, 22, 10);
+  const opacity = 1 - ramp(f, 30, 10);
   return (
     <AbsoluteFill>
       <AbsoluteFill style={{ background: `radial-gradient(circle at ${mid.x}px ${mid.y}px, rgba(255,99,33,0.22) 0%, ${C.black} 58%)`, opacity: ramp(f, 0, 8) }} />
@@ -46,7 +46,7 @@ export const Bridge: React.FC<{ a: Aspect }> = ({ a }) => {
           filter: `drop-shadow(0 40px 60px rgba(0,0,0,0.6)) blur(${settle * 6}px)`,
         }}
       />
-      <Caption cap={cap.bridge} text={r.bridge} underline={r.bridgeKey} at={1} out={11} width={width} />
+      <Caption cap={cap.bridge} text={r.bridge} underline={r.bridgeKey} at={1} out={17} width={width} />
     </AbsoluteFill>
   );
 };
@@ -164,7 +164,8 @@ export const Order: React.FC<{ a: Aspect }> = ({ a }) => {
   const i = stepAt(Math.min(f, ORDER_FRAMES - 1));
   const stepIdx = ORDER_STEPS[i].step;
   // One label per step; it changes with the step, rising like the other lines.
-  const labelStarts = ORDER_STEPS.map((s, k) => (k === 0 || s.step !== ORDER_STEPS[k - 1].step ? STEP_STARTS[k] : null));
+  // The first label waits for the bridge line to leave.
+  const labelStarts = ORDER_STEPS.map((s, k) => (k === 0 ? 6 : s.step !== ORDER_STEPS[k - 1].step ? STEP_STARTS[k] : null));
   return (
     <AbsoluteFill>
       <AbsoluteFill style={{ opacity: 1 - exit, scale: `${1 - 0.05 * exit}`, filter: exit > 0 ? `blur(${exit * 8}px)` : undefined }}>

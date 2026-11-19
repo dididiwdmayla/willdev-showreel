@@ -5,7 +5,7 @@ import { AbsoluteFill, useCurrentFrame } from 'remotion';
 import { brand } from '../../config/branding';
 import { ProjectTag } from '../../src/components/Type';
 import { ease, mix, ramp } from '../../src/lib/anim';
-import { SIZES, desktopMeta, mobileMeta, type Aspect, type Variant } from '../config';
+import { SCENES, SIZES, desktopMeta, mobileMeta, type Aspect, type Variant } from '../config';
 import { Cursor, LensWipe, Shade, Take, TapRing, camera, type Box, type Cam, type Pt } from '../parts';
 import { C, CAPTIONS, Caption, NAMES, desktop, useMessages } from '../shared';
 
@@ -20,9 +20,10 @@ export const CHAPA_BOX: Record<Aspect, Box> = {
 export function openingCam(a: Aspect, f: number): Cam {
   if (desktop(a)) {
     const m = desktopMeta('chapa');
-    const push = ramp(f, 0, 46, ease.out);
-    const go = ramp(f, 46, 30, ease.inOut);
-    const drift = ramp(f, 76, 31, ease.inOut);
+    const L = SCENES.lens;
+    const push = ramp(f, 0, L.from, ease.out);
+    const go = ramp(f, L.from, 30, ease.inOut);
+    const drift = ramp(f, L.from + 30, L.to - L.from - 30, ease.inOut);
     const target = a === '16x9' ? { cx: m.A.x + 70, cy: m.A.y + 64, zoom: 2.1 } : { cx: m.A.x + 46, cy: m.A.y + 8, zoom: 1.95 };
     return {
       cx: mix(640, target.cx, go),
@@ -31,9 +32,9 @@ export function openingCam(a: Aspect, f: number): Cam {
     };
   }
   const m = mobileMeta('chapa');
-  const go = ramp(f, 46, 24, ease.inOut);
+  const go = ramp(f, SCENES.lens.from, 24, ease.inOut);
   const tapA = m.pointer[0];
-  return { cx: 195, cy: mix(422, tapA.y, go * 0.5), zoom: 1 + 0.04 * ramp(f, 0, 46, ease.out) + 0.08 * go };
+  return { cx: 195, cy: mix(422, tapA.y, go * 0.5), zoom: 1 + 0.04 * ramp(f, 0, SCENES.lens.from, ease.out) + 0.08 * go };
 }
 
 /** Variant shots (desktop from the frame the cursor heads for burger A; mobile from just before the tap). */
@@ -103,11 +104,11 @@ export const Opening: React.FC<{ a: Aspect }> = ({ a }) => {
   return (
     <AbsoluteFill style={{ background: C.black }}>
       <ChapaShot a={a} v="chapa" trim={0} cam={(ff) => openingCam(a, ff)} />
-      <AbsoluteFill style={{ opacity: ramp(f, 4, 14) * (1 - ramp(f, 96, 10)) }}>
+      <AbsoluteFill style={{ opacity: ramp(f, 4, 14) * (1 - ramp(f, SCENES.lens.to - 11, 10)) }}>
         {a === '16x9' && <Shade from="bottom" size={480} />}
       </AbsoluteFill>
-      <Caption cap={cap.hook} text={r.hook} underline={r.hookKey} at={8} out={98} width={width} />
-      <ProjectTag label={r.chapaLabel} kind={r.chapaKind} at={60} out={98} style={{ left: cap.tag.x, top: cap.tag.y }} />
+      <Caption cap={cap.hook} text={r.hook} underline={r.hookKey} at={8} out={SCENES.lens.to - 9} width={width} />
+      <ProjectTag label={r.chapaLabel} kind={r.chapaKind} at={SCENES.lens.from + 12} out={SCENES.lens.to - 9} style={{ left: cap.tag.x, top: cap.tag.y }} />
     </AbsoluteFill>
   );
 };
@@ -122,7 +123,7 @@ export const VariantShot: React.FC<{ a: Aspect; v: Variant; center: Pt; label: b
       <AbsoluteFill style={{ background: C.black }}>
         <ChapaShot a={a} v={v} trim={trim} cam={(ff) => variantCam(a, v, ff)} />
         {a === '16x9' && <Shade from="bottom" size={470} strength={0.92} />}
-        {label && <ProjectTag label={NAMES[v]} kind={r.variants[v]} at={6} out={30} style={{ left: cap.variantTag.x, top: cap.variantTag.y }} />}
+        {label && <ProjectTag label={NAMES[v]} kind={r.variants[v]} at={4} out={SCENES[v as 'balcao'].to - SCENES[v as 'balcao'].from - 4} style={{ left: cap.variantTag.x, top: cap.variantTag.y }} />}
       </AbsoluteFill>
     </LensWipe>
   );
@@ -152,7 +153,7 @@ export const GRID: Record<Aspect, Box[]> = {
 export const Grid: React.FC<{ a: Aspect; center: Pt }> = ({ a, center }) => {
   const f = useCurrentFrame();
   const { width, height } = SIZES[a];
-  const out = ramp(f, 31, 10, ease.in);
+  const out = ramp(f, SCENES.grid.to - SCENES.grid.from, 10, ease.in);
   return (
     <LensWipe center={center} width={width} height={height} duration={11}>
       <AbsoluteFill style={{ background: C.black, opacity: 1 - out, scale: `${1 - 0.06 * out}` }}>
@@ -194,6 +195,6 @@ export const Grid: React.FC<{ a: Aspect; center: Pt }> = ({ a, center }) => {
 /** Title over the variants and the grid: "Four layouts. One menu." */
 export const VariantsTitle: React.FC<{ a: Aspect }> = ({ a }) => {
   const r = useMessages();
-  return <Caption cap={CAPTIONS[a].title} text={r.variantsTitle} at={4} out={118} width={SIZES[a].width} />;
+  return <Caption cap={CAPTIONS[a].title} text={r.variantsTitle} at={4} out={SCENES.bridge.from - SCENES.balcao.from - 10} width={SIZES[a].width} />;
 };
 
