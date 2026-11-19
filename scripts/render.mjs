@@ -7,6 +7,10 @@
 //   npm run render -- --all            (the default deliverables)
 //   npm run render -- --commercials    (the social-media commercial in every locale:
 //                                       renders/willdev-commercial-<locale>.mp4, neutral CTA, CRF 16)
+//   npm run render -- --restaurant     (Chapa Burger + Ingarandi, 13.6 s, every locale × 16:9 / 1:1 / 9:16:
+//                                       renders/restaurant/willdev-chapa-ingarandi-<aspect>-<locale>.mp4)
+//       --aspect=9x16 --locale=de      only that format / language
+//       --music=audio/other.m4a --music-start=12.5   another music bed (file under public/), no rebuild
 //
 // Output: renders/willdev-showreel-<platform>-<locale>.mp4 — H.264 + AAC, +faststart,
 // checked against the 40 MB budget. Platforms live in config/platforms.ts, copy in locales/.
@@ -95,8 +99,41 @@ function renderThumbnails(locale) {
   }
 }
 
+/** Restaurant commercial: one render per locale × aspect, audio limited to -1.5 dBFS and trimmed under 13.6 s. */
+function renderRestaurant() {
+  const dir = path.join(OUT, 'restaurant');
+  fs.mkdirSync(dir, { recursive: true });
+  const aspects = args.aspect ? [args.aspect] : ['16x9', '1x1', '9x16'];
+  const list = args.locale ? [args.locale] : Object.keys(locales);
+  const [cmd, pre] = ffmpeg();
+  for (const locale of list) {
+    if (!locales[locale]) throw new Error(`Unknown locale "${locale}"`);
+    for (const aspect of aspects) {
+      const name = `willdev-chapa-ingarandi-${aspect}-${locale.toLowerCase()}.mp4`;
+      const tmp = path.join(dir, `.tmp-${name}`);
+      const final = path.join(dir, name);
+      const props = { locale, aspect, mute: Boolean(args.mute) };
+      if (args.music) props.music = args.music;
+      if (args['music-start']) props.musicStart = Number(args['music-start']);
+      console.log(`\n▶ ${name}`);
+      run('npx', [
+        'remotion', 'render', 'src/index.ts', `Restaurant-${aspect}`, tmp,
+        `--props=${JSON.stringify(props)}`,
+        '--codec=h264', `--crf=${Number(args.crf ?? 16)}`, '--pixel-format=yuv420p', '--color-space=bt709',
+        '--audio-codec=aac', '--audio-bitrate=192k', '--x264-preset=slow',
+      ]);
+      const audio = args.mute ? ['-an'] : ['-af', 'alimiter=limit=0.84:level=false,atrim=0:13.58', '-c:a', 'aac', '-b:a', '192k'];
+      run(cmd, [...pre, '-y', '-v', 'error', '-i', tmp, '-c:v', 'copy', ...audio, '-movflags', '+faststart', final]);
+      fs.rmSync(tmp, { force: true });
+      console.log(`  ${path.relative(ROOT, final)}: ${(fs.statSync(final).size / 1e6).toFixed(1)} MB`);
+    }
+  }
+}
+
 const crf = Number(args.crf ?? 18);
-if (args.commercials) {
+if (args.restaurant) {
+  renderRestaurant();
+} else if (args.commercials) {
   // Same picture, compression and CTA as the published English cut; one file per locale.
   for (const locale of Object.keys(locales)) {
     renderVideo(args.platform ?? 'neutral', locale, Number(args.crf ?? 16), `willdev-commercial-${locale.toLowerCase()}.mp4`);

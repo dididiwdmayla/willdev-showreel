@@ -171,3 +171,26 @@ Nenhuma versão promete resultado, venda ou experiência que o portfólio não m
 
 - Os sites capturados continuam em português nas três versões. São trabalhos reais para clientes brasileiros e não foram traduzidos (seria interface fictícia).
 - A revisão do alemão foi feita por mim, sem falante nativo. Se possível, vale uma leitura rápida de alguém da região antes de investir em mídia paga.
+
+## 9. Comercial de restaurante: Chapa Burger + Ingarandi
+
+Nove vídeos em `renders/restaurant/` (`willdev-chapa-ingarandi-<16x9|1x1|9x16>-<en|pt-br|de>.mp4`): 13,6 s, 30 fps, H.264 yuv420p bt709, AAC estéreo 192 kbps. Código em `restaurant/` (módulos descritos em `restaurant/README.md`).
+
+**Roteiro (no tempo da música, 117,45 BPM):** abertura da Chapa Burger, a câmera vai até um lanche e a lente revela o prato vazio (0–3,6 s); as variantes Balcão, Sala e Praça entram por um círculo que nasce de onde a lente estava (3,6–6,6 s); as quatro lado a lado (6,6–7,7 s); o lanche do Ingarandi faz a ponte (7,7–8,2 s); a compra no celular, etapa por etapa (8,2–11,7 s); a moeda WillDev nasce do check de "Pago!", gira e assenta, com a frase e o CTA (11,7–13,6 s). São dois projetos e o vídeo diz isso: cada um tem a sua etiqueta (conceito e cliente).
+
+**Formatos:** 16:9 com o site em tela cheia; 1:1 com o site numa janela 16:10 e as legendas numa faixa abaixo; 9:16 com a captura do celular numa janela alta e as legendas acima. Cada formato tem enquadramento, câmera e posição de texto próprios.
+
+**A compra é real (ambiente de teste).** Cópia descartável do site, Firestore no emulador local (projeto `demo-ingarandi`), conta vendedora e conta compradora de teste do Mercado Pago, cartão de teste Visa com titular `APRO`. O pedido #W97D foi pago no Checkout Pro e voltou ao site com `status=approved`; a notificação foi entregue ao webhook local, que consultou o pagamento na API do Mercado Pago (`approved`, `accredited`) antes de marcar o pedido como pago. Nada tocou a produção. O selo "ambiente de teste do Mercado Pago" fica na tela durante toda a compra. O e-mail mascarado do comprador de teste foi ocultado na tela de revisão do Mercado Pago.
+
+Ajustes que só existem na cópia de captura, nunca no repositório do Ingarandi: o Firestore aponta para o emulador e o e-mail do pagador vem de `SANDBOX_PAYER_EMAIL`, porque o sandbox recusa pagador que não seja conta de teste. O Pix não estava habilitado na conta de teste, por isso a compra usa cartão.
+
+**Som:** trilha "Lucky Draw" (Suno, a mesma do comercial institucional) a partir do segundo drop (97,65 s), com fade-out no último segundo; efeitos sintetizados em `scripts/sfx.py` (impacto, whoosh, lente, toques, confirmação, giro e moeda), posicionados nos movimentos. Limitador a −1,5 dBFS. A trilha troca por parâmetro, sem reconstruir o vídeo (`--music=`, `--music-start=`).
+
+**Verificação:**
+- `ffprobe` nos nove: 13,600 s, resolução e fps corretos, áudio AAC estéreo presente.
+- Loudness integrado −13,5 LUFS, pico −1,3 dBFS em todos; trecho só de música (0,75–1,25 s) a −14,6 dB de média, ou seja, a trilha está presente e audível.
+- OCR de 1 a cada 3 quadros em três vídeos (16:9 EN, 9:16 PT-BR, 1:1 DE): nenhum telefone, e-mail, URL ou menção a WhatsApp.
+- Captura: a varredura de texto marcou só um quadro do pedido com o rótulo vazio "Telefone / WhatsApp" do formulário, que não entra na montagem.
+- Revisão visual por folhas de contato (`renders/restaurant/review/`).
+
+**Limitações:** as frases da lente são as do próprio site (uma delas tem emoji); o número do pedido e o cartão de teste mascarado (`**** 5682`) aparecem porque fazem parte da tela real; a etapa de dados do cliente foi digitada fora da câmera para não mostrar telefone nem endereço.

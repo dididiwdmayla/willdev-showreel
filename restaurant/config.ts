@@ -9,10 +9,22 @@ import meta from '../footage/capture-meta.json';
 
 export const FPS = 30;
 export const DURATION = 408;
-/** Seconds into lucky-draw.m4a where the commercial starts (the drop). */
-export const MUSIC_START = 97.65;
-/** Frame where the music fade-out begins; it ends at DURATION. */
-export const MUSIC_FADE_FROM = DURATION - 30;
+/**
+ * Music bed. Replaceable without touching any scene: drop the file in
+ * assets/audio/ (served as audio/<file>) and change `file`/`start` here, or
+ * pass the props `music` / `musicStart` (render.mjs: --music= --music-start=).
+ * The cuts follow the beat grid of this track (BEAT); a new track at another
+ * tempo keeps the same cuts, they just stop landing exactly on its beats.
+ */
+export const MUSIC = {
+  /** Brand track "Lucky Draw" (Suno), the same one as the institutional commercial. */
+  file: 'audio/lucky-draw.m4a',
+  /** Seconds into the file where the commercial starts: its second drop. */
+  start: 97.65,
+  gain: 0.9,
+  /** Frames of fade-out at the end. */
+  fadeOut: 30,
+} as const;
 
 export const BEAT = (60 / 117.45) * FPS;
 /** Beat n → frame. */

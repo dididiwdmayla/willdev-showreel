@@ -8,6 +8,7 @@ Vídeo promocional de 35 s da WillDev, feito em código: **Remotion** (React + T
 | Versão Fiverr | `renders/willdev-showreel-fiverr-en.mp4` |
 | Comercial para redes sociais, EN · PT-BR · DE | `renders/willdev-commercial-en.mp4`, `-pt-br.mp4`, `-de.mp4` |
 | Thumbnails 16:9 | `renders/thumbnail-1920x1080.png`, `renders/thumbnail-1280x720.png` |
+| Comercial de restaurante (Chapa Burger + Ingarandi), 3 formatos × 3 idiomas | `renders/restaurant/` (ver `restaurant/README.md`) |
 | Relatório da produção | `REPORT.md` |
 
 1920×1080, 30 fps, H.264 + AAC, MP4 com `+faststart`, 35,0 s.
@@ -23,6 +24,16 @@ npm run render -- --commercials
 ```
 
 Com `--platform=fiverr`, o CTA final passa a ser o da plataforma. **Novo idioma:** copie `locales/en.ts` para `locales/<código>.ts`, traduza e registre em `locales/index.ts`; o comando acima passa a incluí-lo. As linhas medem o próprio texto e quebram ou reduzem o corpo só quando ele não cabe na coluna. Detalhes da localização em `REPORT.md` (seção 8).
+
+## Comercial de restaurante (Chapa Burger + Ingarandi)
+
+13,6 s em 16:9, 1:1 e 9:16, em EN, PT-BR e DE: as quatro variantes da Chapa Burger com a lente do cardápio, e a compra real do Ingarandi no ambiente de teste do Mercado Pago, fechando na moeda WillDev.
+
+```bash
+npm run render -- --restaurant
+```
+
+Trocar a música sem reconstruir: `--music=audio/<arquivo> --music-start=<segundos>`. Módulos, capturas e sandbox: `restaurant/README.md`.
 
 ## Galeria do Fiverr (3 imagens)
 
