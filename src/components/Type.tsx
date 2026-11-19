@@ -80,7 +80,8 @@ export const Line: React.FC<LineProps> = ({
         const u = key ? ramp(frame, at + i * stagger + 8, 14, ease.inOut) : 0;
         return (
           <span key={i} style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'top', paddingBottom: fs * 0.16, marginBottom: -fs * 0.16, paddingRight: fs * 0.06, marginRight: -fs * 0.06 }}>
-            <span style={{ display: 'inline-block', translate: `0 ${(1 - t) * 105 + leave * 105}%`, position: 'relative' }}>
+            {/* Hidden outright before it rises and after it leaves: tall accents (É, Ä…) would otherwise peek over the mask. */}
+            <span style={{ display: 'inline-block', translate: `0 ${(1 - t) * 105 + leave * 105}%`, position: 'relative', opacity: t > 0 && leave < 1 ? 1 : 0 }}>
               {w}
               {key && (
                 <span

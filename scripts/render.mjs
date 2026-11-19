@@ -5,6 +5,8 @@
 //   npm run render -- --platform=fiverr-business --locale=en --crf=20
 //   npm run render -- --thumbnails --locale=en
 //   npm run render -- --all            (the default deliverables)
+//   npm run render -- --commercials    (the social-media commercial in every locale:
+//                                       renders/willdev-commercial-<locale>.mp4, neutral CTA, CRF 16)
 //
 // Output: renders/willdev-showreel-<platform>-<locale>.mp4 — H.264 + AAC, +faststart,
 // checked against the 40 MB budget. Platforms live in config/platforms.ts, copy in locales/.
@@ -39,11 +41,10 @@ function ffmpeg() {
   return r.status === 0 ? ['ffmpeg', []] : ['npx', ['remotion', 'ffmpeg']];
 }
 
-function renderVideo(platform, locale, crf) {
+function renderVideo(platform, locale, crf, name = `willdev-showreel-${platform}-${locale}.mp4`) {
   if (!platforms[platform]) throw new Error(`Unknown platform "${platform}". Known: ${Object.keys(platforms).join(', ')}`);
   if (!locales[locale]) throw new Error(`Unknown locale "${locale}". Known: ${Object.keys(locales).join(', ')}`);
   fs.mkdirSync(OUT, { recursive: true });
-  const name = `willdev-showreel-${platform}-${locale}.mp4`;
   const tmp = path.join(OUT, `.tmp-${name}`);
   const final = path.join(OUT, name);
   const props = JSON.stringify({ platform, locale, mute: Boolean(args.mute) });
@@ -95,7 +96,12 @@ function renderThumbnails(locale) {
 }
 
 const crf = Number(args.crf ?? 18);
-if (args.all) {
+if (args.commercials) {
+  // Same picture, compression and CTA as the published English cut; one file per locale.
+  for (const locale of Object.keys(locales)) {
+    renderVideo(args.platform ?? 'neutral', locale, Number(args.crf ?? 16), `willdev-commercial-${locale.toLowerCase()}.mp4`);
+  }
+} else if (args.all) {
   renderVideo('neutral', 'en', crf);
   renderVideo('fiverr', 'en', crf);
   renderThumbnails('en');

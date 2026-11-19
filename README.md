@@ -6,10 +6,23 @@ Vídeo promocional de 35 s da WillDev, feito em código: **Remotion** (React + T
 | :- | :- |
 | Versão neutra (só WillDev) | `renders/willdev-showreel-neutral-en.mp4` |
 | Versão Fiverr | `renders/willdev-showreel-fiverr-en.mp4` |
+| Comercial para redes sociais, EN · PT-BR · DE | `renders/willdev-commercial-en.mp4`, `-pt-br.mp4`, `-de.mp4` |
 | Thumbnails 16:9 | `renders/thumbnail-1920x1080.png`, `renders/thumbnail-1280x720.png` |
 | Relatório da produção | `REPORT.md` |
 
 1920×1080, 30 fps, H.264 + AAC, MP4 com `+faststart`, 35,0 s.
+
+## Comercial em três idiomas (EN · PT-BR · DE)
+
+O mesmo comercial em inglês, português do Brasil e alemão: mesmas cenas, ritmo, trilha e CTA neutro (sem marketplace), próprio para Facebook e outras redes. Só os textos mudam; eles ficam em `locales/en.ts`, `locales/pt-BR.ts` e `locales/de.ts`.
+
+Para gerar os três (`renders/willdev-commercial-<idioma>.mp4`, CRF 16):
+
+```bash
+npm run render -- --commercials
+```
+
+Com `--platform=fiverr`, o CTA final passa a ser o da plataforma. **Novo idioma:** copie `locales/en.ts` para `locales/<código>.ts`, traduza e registre em `locales/index.ts`; o comando acima passa a incluí-lo. As linhas medem o próprio texto e quebram ou reduzem o corpo só quando ele não cabe na coluna. Detalhes da localização em `REPORT.md` (seção 8).
 
 ## Galeria do Fiverr (3 imagens)
 

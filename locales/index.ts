@@ -1,7 +1,8 @@
 import { en, type Messages } from './en';
 import { ptBR } from './pt-BR';
+import { de } from './de';
 
-export const locales = { en, 'pt-BR': ptBR } satisfies Record<string, Messages>;
+export const locales = { en, 'pt-BR': ptBR, de } satisfies Record<string, Messages>;
 export type LocaleId = keyof typeof locales;
 export type { Messages };
 

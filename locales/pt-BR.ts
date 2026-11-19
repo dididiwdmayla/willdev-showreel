@@ -1,4 +1,5 @@
 // Português do Brasil. Mesma estrutura de locales/en.ts.
+// Tom direto e profissional para empresários e pequenos negócios; tradução adaptada, não literal.
 import type { Messages } from './en';
 
 export const ptBR: Messages = {
@@ -13,7 +14,7 @@ export const ptBR: Messages = {
     kind: 'Cardápio de lanchonete · Conceito',
   },
   hardeletric: {
-    headline: 'Construído com precisão.',
+    headline: 'Desenvolvido com precisão.',
     label: 'Hard Eletric',
     kind: 'Serviços elétricos · Cliente',
   },
@@ -26,15 +27,15 @@ export const ptBR: Messages = {
   interativmind: {
     headline: 'Movido pela imaginação.',
     label: 'interativMind',
-    kind: 'Hub de estudos · Conceito',
+    kind: 'Plataforma de estudos · Conceito',
   },
   closing: {
-    line1: 'Sua visão.',
-    line2: 'Feita de verdade.',
-    line2Key: 'verdade',
-    services: ['Sites sob medida', 'Landing pages', 'Experiências interativas'],
-    ctaNeutral: 'Vamos criar algo memorável.',
-    ctaPlatform: 'Me chame aqui no {platform}',
+    line1: 'Sua marca',
+    line2: 'em destaque.',
+    line2Key: 'destaque',
+    services: ['Sites personalizados', 'Landing pages', 'Experiências interativas'],
+    ctaNeutral: 'Vamos tirar sua ideia do papel.',
+    ctaPlatform: 'Fale comigo aqui no {platform}',
   },
   thumbnail: {
     line1: 'Sites que',

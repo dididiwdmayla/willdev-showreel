@@ -95,3 +95,79 @@ Feita no material renderizado, não só no build.
 - **Serviços comerciais.** O vídeo nomeia setor e tipo de cada trabalho (dois clientes reais), mostra um site empresarial responsivo e termina com a lista de serviços e o convite.
 - **Código.** `tsc --noEmit` e ESLint (config do Remotion) sem erros nem avisos.
 - **Repositórios de origem.** `git status` limpo nos cinco, sem commits novos.
+
+## 8. Localização do comercial (EN · PT-BR · DE)
+
+O comercial agora existe em inglês, português do Brasil e alemão, a partir das mesmas composições, sem cena nova nem mudança de identidade. Os três usam a variante neutra (CTA sem marketplace), própria para Facebook e outras redes; com `--platform=fiverr`, o CTA volta a ser o da plataforma.
+
+| Arquivo | Duração | Resolução | FPS | Tamanho |
+| :- | :- | :- | :- | :- |
+| `renders/willdev-commercial-en.mp4` | 35,000 s | 1920×1080 | 30 | 17,2 MB |
+| `renders/willdev-commercial-pt-br.mp4` | 35,000 s | 1920×1080 | 30 | 17,4 MB |
+| `renders/willdev-commercial-de.mp4` | 35,000 s | 1920×1080 | 30 | 17,3 MB |
+
+Os três saem em H.264 yuv420p BT.709, CRF 16, AAC 192 kbps e `+faststart`, com as mesmas 1050 imagens e a mesma trilha do original.
+
+**Como funciona.** Todo texto visível vem de `locales/<idioma>.ts`; as cenas leem do contexto e nenhuma tem texto fixo. O alemão é um arquivo novo (`locales/de.ts`, registrado em `locales/index.ts`). `npm run render -- --commercials` gera um arquivo por idioma registrado.
+
+### Textos
+
+| Momento | EN | PT-BR | DE |
+| :- | :- | :- | :- |
+| Abertura | Not just a website. / An experience. | Não é só um site. / É uma experiência. | Nicht nur eine Website. / Ein Erlebnis. |
+| Lancheria | Made to interact. | Feito para interagir. | Gemacht zum Anfassen. |
+| Hard Eletric | Built with precision. | Desenvolvido com precisão. | Präzise umgesetzt. |
+| VG Construção | Designed for real businesses. | Pensado para negócios reais. | Für echte Unternehmen entwickelt. |
+| interativMind | Driven by imagination. | Movido pela imaginação. | Gestaltet mit Fantasie. |
+| Encerramento | Your vision. / Made real. | Sua marca / em destaque. | Ihre Vision. / Wird Realität. |
+| Serviços | Custom websites · Landing pages · Interactive experiences | Sites personalizados · Landing pages · Experiências interativas | Individuelle Websites · Landingpages · Interaktive Erlebnisse |
+| CTA | Let’s build something memorable. | Vamos tirar sua ideia do papel. | Starten wir Ihr Projekt. |
+
+Rótulos dos projetos:
+
+| Projeto | EN | PT-BR | DE |
+| :- | :- | :- | :- |
+| Lancheria | Restaurant menu · Concept | Cardápio de lanchonete · Conceito | Speisekarte · Konzept |
+| Hard Eletric | Electrical services · Client | Serviços elétricos · Cliente | Elektroinstallation · Kundenprojekt |
+| VG | Construction company · Client | Construtora · Cliente | Bauunternehmen · Kundenprojekt |
+| interativMind | Learning hub · Concept | Plataforma de estudos · Conceito | Lernplattform · Konzept |
+
+CTA da variante de marketplace: "Fale comigo aqui no {platform}" e "Schreiben Sie mir hier auf {platform}".
+
+**Escolhas de tradução** (adaptadas, não literais):
+- **"Gemacht zum Anfassen"** ("feito para tocar") é a forma idiomática alemã para algo interativo; "Interaktion" ficaria longo e técnico.
+- **"Präzise umgesetzt"** soa mais natural para um site do que "mit Präzision gebaut".
+- **Alemão formal:** "Ihre", "Sie" e "Starten wir Ihr Projekt", sem regionalismos, legível na Alemanha, Áustria e Suíça.
+- **Encerramento em pt-BR:** "Sua marca em destaque" segue a direção do briefing ("sua marca merece se destacar") e cabe no tamanho original da fonte (ver ajustes).
+- **Revisão do pt-BR que já existia:**
+  - "Construído" → "Desenvolvido";
+  - "Hub de estudos" → "Plataforma de estudos";
+  - "Sites sob medida" → "Sites personalizados";
+  - "Feita de verdade" → "Sua marca em destaque";
+  - "Vamos criar algo memorável" → "Vamos tirar sua ideia do papel";
+  - "Me chame" → "Fale comigo".
+
+Nenhuma versão promete resultado, venda ou experiência que o portfólio não mostra.
+
+### Ajustes de composição
+
+- **Nenhuma cena precisou mudar posição, tempo ou duração.** As linhas medem o próprio texto (`fitSize`) e as frases longas quebram em duas linhas equilibradas (`balance`). A duração total continua 35,000 s e os cortes seguem nos mesmos compassos.
+- **Encerramento em pt-BR.** A primeira proposta, "Sua marca merece / se destacar.", obrigava a fonte a cair cerca de 20% (de 120 para ~95 px). Em vez de reduzir a fonte, a frase foi encurtada para "Sua marca / em destaque.", que cabe nos 120 px originais.
+- **Título da VG em alemão.** "Für echte Unternehmen entwickelt." é o mais longo da série e fica ~14% menor que o inglês, numa linha só e longe do selo do canto; a leitura não muda.
+- **Correção no componente de linha** (`src/components/Type.tsx`). O acento de maiúsculas como o "É" de "É uma experiência" aparecia sobre a máscara antes de a palavra subir. Agora a palavra fica oculta até começar a subir e depois de sair; o movimento é o mesmo.
+
+### Verificação
+
+- **Quadros examinados um a um** (pt-BR e DE), no meio de cada cena e em cada transição, nos MP4 finais: nenhum texto cortado, sobreposto ou ilegível; os quatro projetos aparecem como no original; as transições continuam intactas.
+- **Sincronia.** O áudio de pt-BR e DE é idêntico amostra a amostra ao do inglês, com a mesma linha do tempo e os mesmos cortes.
+- **Regressão do inglês.**
+  - Comparação com `renders/willdev-showreel-neutral-en.mp4`: SSIM 0,998, pior quadro 47,9 dB, só ruído de compressão espalhado pelo quadro.
+  - Comparação sem compressão (PNG), antes e depois da correção do acento: os quadros só diferem logo antes de uma palavra subir, onde sumiu o brilho residual da palavra ainda oculta (máximo 27/255, área pequena). Todo o resto é idêntico pixel a pixel.
+- **Contato.** O OCR dos 1050 quadros de pt-BR e de DE não encontrou telefone, e-mail, URL nem menção a canal externo (`renders/willdev-commercial-*.ocr.json`). No alemão houve um falso positivo no quadro 650: "arafiato.com" era o card "Pintura" da VG ("grafiato com preparo correto") lido sem espaços. A leitura em 2× confirmou o texto real, e é o mesmo trecho de vídeo das outras versões.
+- **Ortografia.** Conferida no texto-fonte e nos quadros: o OCR não lê diacríticos, então acentos, ß e tremas foram vistos nas imagens.
+- **Código.** `npm run lint` (ESLint + `tsc`) passou limpo.
+
+### Limitações
+
+- Os sites capturados continuam em português nas três versões. São trabalhos reais para clientes brasileiros e não foram traduzidos (seria interface fictícia).
+- A revisão do alemão foi feita por mim, sem falante nativo. Se possível, vale uma leitura rápida de alguém da região antes de investir em mídia paga.
