@@ -36,6 +36,27 @@ export const RemotionRoot: React.FC = () => {
         height={HEIGHT}
         defaultProps={{ platform: 'fiverr' as const, locale: 'en' as const, mute: false }}
       />
+      {/* Instagram cuts of the same commercial: Reels/Stories 9:16 and feed 4:5 (`npm run render -- --instagram`). */}
+      <Composition
+        id="Showreel-9x16"
+        component={Showreel}
+        schema={showreelSchema}
+        durationInFrames={DURATION_FRAMES}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ platform: 'neutral' as const, locale: 'en' as const, mute: false, aspect: '9x16' as const }}
+      />
+      <Composition
+        id="Showreel-4x5"
+        component={Showreel}
+        schema={showreelSchema}
+        durationInFrames={DURATION_FRAMES}
+        fps={FPS}
+        width={1080}
+        height={1350}
+        defaultProps={{ platform: 'neutral' as const, locale: 'en' as const, mute: false, aspect: '4x5' as const }}
+      />
       <Still id="Thumbnail" component={Thumbnail} schema={thumbnailSchema} width={1920} height={1080} defaultProps={{ locale: 'en' as const }} />
       <Still id="Thumbnail-720" component={Thumbnail} schema={thumbnailSchema} width={1280} height={720} defaultProps={{ locale: 'en' as const }} />
       {/* Fiverr gallery images (gallery/, rendered by `npm run gallery`). */}

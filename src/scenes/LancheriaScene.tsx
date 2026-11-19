@@ -8,6 +8,7 @@ import { fitSize, ProjectTag } from '../components/Type';
 import { useShow } from '../context';
 import { ease, mix, ramp } from '../lib/anim';
 import type { SceneProps } from './shared';
+import { LancheriaVertical } from './vertical/LancheriaVertical';
 
 const C = brand.colors;
 /** lancheria-trilho: frame where "Prensado Completo" starts leaving the centre and opens. */
@@ -19,7 +20,7 @@ const RAIOX_PRESS = 62;
  * 07–13 s: the sandwich opens into its layers. The headline words stack like
  * layers too: they separate when the sandwich opens and snap shut with the press.
  */
-export const LancheriaScene: React.FC<SceneProps> = ({ cue, durationInFrames }) => {
+const LancheriaSceneWide: React.FC<SceneProps> = ({ cue, durationInFrames }) => {
   const frame = useCurrentFrame();
   const { messages } = useShow();
   const m = messages.lancheria;
@@ -100,4 +101,10 @@ export const LancheriaScene: React.FC<SceneProps> = ({ cue, durationInFrames }) 
       <ProjectTag label={m.label} kind={m.kind} at={12} out={durationInFrames - 8} style={{ left: 112, top: 940 }} />
     </AbsoluteFill>
   );
+};
+
+/** 16:9 keeps the original composition; the Instagram formats get their own (src/scenes/vertical/). */
+export const LancheriaScene: React.FC<SceneProps> = (props) => {
+  const { aspect } = useShow();
+  return aspect === '16x9' ? <LancheriaSceneWide {...props} /> : <LancheriaVertical {...props} />;
 };

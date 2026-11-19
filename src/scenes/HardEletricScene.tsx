@@ -8,6 +8,7 @@ import { Line, ProjectTag } from '../components/Type';
 import { useShow } from '../context';
 import { ease, mix, ramp } from '../lib/anim';
 import { balance, type SceneProps } from './shared';
+import { HardEletricVertical } from './vertical/HardEletricVertical';
 
 const C = brand.colors;
 /** he-quadro: frame where the blade closes and the photo relights. */
@@ -63,7 +64,7 @@ const Crop: React.FC<{ region: typeof BOARD; push: number; children: React.React
  * during the track's one-bar break the schematic is traced, and the photo relights
  * on the beat that brings the kick back.
  */
-export const HardEletricScene: React.FC<SceneProps> = ({ cue, durationInFrames }) => {
+const HardEletricSceneWide: React.FC<SceneProps> = ({ cue, durationInFrames }) => {
   const frame = useCurrentFrame();
   const { messages } = useShow();
   const m = messages.hardeletric;
@@ -107,4 +108,10 @@ export const HardEletricScene: React.FC<SceneProps> = ({ cue, durationInFrames }
       <ProjectTag label={m.label} kind={m.kind} at={14} out={durationInFrames - 8} style={{ left: 1254, top: 660 }} />
     </AbsoluteFill>
   );
+};
+
+/** 16:9 keeps the original composition; the Instagram formats get their own (src/scenes/vertical/). */
+export const HardEletricScene: React.FC<SceneProps> = (props) => {
+  const { aspect } = useShow();
+  return aspect === '16x9' ? <HardEletricSceneWide {...props} /> : <HardEletricVertical {...props} />;
 };

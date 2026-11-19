@@ -8,11 +8,12 @@ import { Line, ProjectTag } from '../components/Type';
 import { useShow } from '../context';
 import { ease, mix, ramp } from '../lib/anim';
 import type { SceneProps } from './shared';
+import { VgVertical } from './vertical/VgVertical';
 
 const C = brand.colors;
 
 /** 19–23 s: a conventional business site, the same page on desktop and phone, scrolling together. */
-export const VgScene: React.FC<SceneProps> = ({ cue, durationInFrames }) => {
+const VgSceneWide: React.FC<SceneProps> = ({ cue, durationInFrames }) => {
   const frame = useCurrentFrame();
   const { messages } = useShow();
   const m = messages.vg;
@@ -43,4 +44,10 @@ export const VgScene: React.FC<SceneProps> = ({ cue, durationInFrames }) => {
       <ProjectTag label={m.label} kind={m.kind} at={14} out={durationInFrames - 8} style={{ left: 112, top: 966 }} />
     </AbsoluteFill>
   );
+};
+
+/** 16:9 keeps the original composition; the Instagram formats get their own (src/scenes/vertical/). */
+export const VgScene: React.FC<SceneProps> = (props) => {
+  const { aspect } = useShow();
+  return aspect === '16x9' ? <VgSceneWide {...props} /> : <VgVertical {...props} />;
 };

@@ -7,6 +7,8 @@
 //   npm run render -- --all            (the default deliverables)
 //   npm run render -- --commercials    (the social-media commercial in every locale:
 //                                       renders/willdev-commercial-<locale>.mp4, neutral CTA, CRF 16)
+//   npm run render -- --instagram      (the commercial recomposed for Instagram, every locale:
+//                                       renders/instagram/willdev-commercial-<9x16|4x5>-<locale>.mp4)
 //   npm run render -- --restaurant     (Chapa Burger + Ingarandi, 13.6 s, every locale × 16:9 / 1:1 / 9:16:
 //                                       renders/restaurant/willdev-chapa-ingarandi-<aspect>-<locale>.mp4)
 //       --aspect=9x16 --locale=de      only that format / language
@@ -45,16 +47,16 @@ function ffmpeg() {
   return r.status === 0 ? ['ffmpeg', []] : ['npx', ['remotion', 'ffmpeg']];
 }
 
-function renderVideo(platform, locale, crf, name = `willdev-showreel-${platform}-${locale}.mp4`) {
+function renderVideo(platform, locale, crf, name = `willdev-showreel-${platform}-${locale}.mp4`, { composition = 'Showreel', aspect, dir = OUT } = {}) {
   if (!platforms[platform]) throw new Error(`Unknown platform "${platform}". Known: ${Object.keys(platforms).join(', ')}`);
   if (!locales[locale]) throw new Error(`Unknown locale "${locale}". Known: ${Object.keys(locales).join(', ')}`);
-  fs.mkdirSync(OUT, { recursive: true });
-  const tmp = path.join(OUT, `.tmp-${name}`);
-  const final = path.join(OUT, name);
-  const props = JSON.stringify({ platform, locale, mute: Boolean(args.mute) });
+  fs.mkdirSync(dir, { recursive: true });
+  const tmp = path.join(dir, `.tmp-${name}`);
+  const final = path.join(dir, name);
+  const props = JSON.stringify({ platform, locale, mute: Boolean(args.mute), ...(aspect ? { aspect } : {}) });
   console.log(`\n▶ ${name}`);
   run('npx', [
-    'remotion', 'render', 'src/index.ts', 'Showreel', tmp,
+    'remotion', 'render', 'src/index.ts', composition, tmp,
     `--props=${props}`,
     '--codec=h264', `--crf=${crf}`, '--pixel-format=yuv420p', '--color-space=bt709',
     '--audio-codec=aac', '--audio-bitrate=192k',
@@ -139,7 +141,20 @@ function renderRestaurant() {
 }
 
 const crf = Number(args.crf ?? 18);
-if (args.restaurant) {
+if (args.instagram) {
+  // Reels/Stories 9:16 (1080×1920) and feed 4:5 (1080×1350); same soundtrack, timing and neutral CTA.
+  const aspects = args.aspect ? [args.aspect] : ['9x16', '4x5'];
+  const list = args.locale ? [args.locale] : Object.keys(locales);
+  for (const locale of list) {
+    for (const aspect of aspects) {
+      renderVideo(args.platform ?? 'neutral', locale, Number(args.crf ?? 16), `willdev-commercial-${aspect}-${locale.toLowerCase()}.mp4`, {
+        composition: `Showreel-${aspect}`,
+        aspect,
+        dir: path.join(OUT, 'instagram'),
+      });
+    }
+  }
+} else if (args.restaurant) {
   renderRestaurant();
 } else if (args.commercials) {
   // Same picture, compression and CTA as the published English cut; one file per locale.

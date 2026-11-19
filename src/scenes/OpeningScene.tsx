@@ -8,13 +8,14 @@ import { Line } from '../components/Type';
 import { useShow } from '../context';
 import { ease, mix, ramp } from '../lib/anim';
 import { balance, type SceneProps } from './shared';
+import { OpeningVertical } from './vertical/OpeningVertical';
 
 const C = brand.colors;
 /** The InterativMind entrance clip: ink starts ~7 frames in; start it so the ink meets the drop. */
 const INK_LEAD = 7;
 
 /** 00–07 s: ink opens the interativMind scroll painting on the drop; the first two lines frame it. */
-export const OpeningScene: React.FC<SceneProps> = ({ cue }) => {
+const OpeningSceneWide: React.FC<SceneProps> = ({ cue }) => {
   const frame = useCurrentFrame();
   const { messages } = useShow();
   const m = messages.opening;
@@ -70,4 +71,10 @@ export const OpeningScene: React.FC<SceneProps> = ({ cue }) => {
       </div>
     </AbsoluteFill>
   );
+};
+
+/** 16:9 keeps the original composition; the Instagram formats get their own (src/scenes/vertical/). */
+export const OpeningScene: React.FC<SceneProps> = (props) => {
+  const { aspect } = useShow();
+  return aspect === '16x9' ? <OpeningSceneWide {...props} /> : <OpeningVertical {...props} />;
 };

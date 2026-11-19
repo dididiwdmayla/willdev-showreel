@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
 import { getLength, getPointAtLength } from '@remotion/paths';
+import { useVideoConfig } from 'remotion';
 import { brand } from '../../config/branding';
 
 type Props = {
-  /** SVG path in the 1920×1080 frame. Use rounded corners (arcs/quadratics) — that is the motif. */
+  /** SVG path in the video frame (1920×1080 or the Instagram sizes). Use rounded corners (arcs/quadratics) — that is the motif. */
   d: string;
   /** Drawn portion, 0→1 from the start of the path. */
   progress: number;
@@ -28,6 +29,7 @@ export const NeonPath: React.FC<Props> = ({
   head = true,
   opacity = 1,
 }) => {
+  const { width: W, height: H } = useVideoConfig();
   const len = useMemo(() => getLength(d), [d]);
   const start = len * Math.min(tail, progress);
   const end = len * progress;
@@ -36,7 +38,7 @@ export const NeonPath: React.FC<Props> = ({
   const p = progress > 0 && progress < 1 && head ? getPointAtLength(d, end) : null;
   if (visible <= 0.5) return null;
   return (
-    <svg width={1920} height={1080} viewBox="0 0 1920 1080" style={{ position: 'absolute', inset: 0, overflow: 'visible', opacity, pointerEvents: 'none' }}>
+    <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ position: 'absolute', inset: 0, overflow: 'visible', opacity, pointerEvents: 'none' }}>
       <path d={d} fill="none" stroke={glowColor} strokeWidth={width * 5} strokeLinecap="round" strokeLinejoin="round" strokeDasharray={dash} style={{ filter: `blur(${width * 2.2}px)` }} />
       <path d={d} fill="none" stroke={glowColor} strokeWidth={width * 2} strokeLinecap="round" strokeLinejoin="round" strokeDasharray={dash} style={{ filter: `blur(${width * 0.8}px)` }} />
       <path d={d} fill="none" stroke={color} strokeWidth={width} strokeLinecap="round" strokeLinejoin="round" strokeDasharray={dash} />

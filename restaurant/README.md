@@ -25,7 +25,7 @@ Cada cena recebe o formato (`a`) e lê suas tomadas de `footage/`; nenhuma depen
 
 ## Trocar a música
 
-A trilha atual é "Lucky Draw" (Suno, `assets/audio/lucky-draw.m4a`), a mesma do comercial institucional, a partir do segundo drop (97,65 s).
+A trilha atual é "WillDev Burger Funk" (`assets/audio/willdev-burger-funk.wav`, 13,6 s, ~141 BPM), feita para este corte; os cortes estão na grade dela (`BEAT`, `SCENES` em `config.ts`). A música baixa 3 dB durante a compra (`MUSIC.duck`), e a finalização normaliza a mixagem a −14 LUFS.
 
 Para usar outra, sem reconstruir nada:
 
@@ -36,7 +36,7 @@ Para usar outra, sem reconstruir nada:
 npm run render -- --restaurant --music=audio/nova-faixa.m4a --music-start=12.5
 ```
 
-Ou mude `MUSIC.file`/`MUSIC.start` em `config.ts` para torná-la o padrão. Os cortes seguem a grade de 117,45 BPM da faixa atual (`BEAT`); com outra faixa eles continuam onde estão. Para que voltem a cair nas batidas da nova, ajuste o BPM em `config.ts` (o `scripts/analyze-audio.py` mede o BPM).
+Ou mude `MUSIC.file`/`MUSIC.start` em `config.ts` para torná-la o padrão. Com outra faixa, os cortes continuam onde estão. Para que voltem a cair nas batidas da nova, ajuste o BPM e a primeira batida de `beat()` em `config.ts` e, se quiser, os quadros de `SCENES`.
 
 Os efeitos sonoros são gerados por `python3 scripts/sfx.py` (`assets/sfx/`, sintetizados no próprio script) e posicionados por `sound.tsx`.
 

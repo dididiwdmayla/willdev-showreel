@@ -184,13 +184,33 @@ Nove vídeos em `renders/restaurant/` (`willdev-chapa-ingarandi-<16x9|1x1|9x16>-
 
 Ajustes que só existem na cópia de captura, nunca no repositório do Ingarandi: o Firestore aponta para o emulador e o e-mail do pagador vem de `SANDBOX_PAYER_EMAIL`, porque o sandbox recusa pagador que não seja conta de teste. O Pix não estava habilitado na conta de teste, por isso a compra usa cartão.
 
-**Som:** trilha "Lucky Draw" (Suno, a mesma do comercial institucional) a partir do segundo drop (97,65 s), com fade-out no último segundo; efeitos sintetizados em `scripts/sfx.py` (impacto, whoosh, lente, toques, confirmação, giro e moeda), posicionados nos movimentos. Limitador a −1,5 dBFS. A trilha troca por parâmetro, sem reconstruir o vídeo (`--music=`, `--music-start=`).
+**Som:** trilha "WillDev Burger Funk" (`assets/audio/willdev-burger-funk.wav`, instrumental de 13,6 s feita para este corte, ~141 BPM), no lugar da "Lucky Draw" usada na primeira versão. Os cortes seguem a grade dela: a câmera mergulha na lente no 2º compasso, as variantes entram nos tempos fortes, o "Pago!" cai no acento de 11,07 s e a moeda assenta no acento mais forte (12,35 s). A música baixa 3 dB durante a compra e volta para a moeda. Efeitos sintetizados em `scripts/sfx.py` (impacto, whoosh, lente, toques, confirmação, giro e moeda), mantidos e rebalanceados contra a faixa nova. A finalização mede o loudness e normaliza a −14 LUFS, com limitador (true peak −1,3 dBTP). A trilha troca por parâmetro, sem reconstruir o vídeo (`--music=`, `--music-start=`).
 
 **Verificação:**
 - `ffprobe` nos nove: 13,600 s, resolução e fps corretos, áudio AAC estéreo presente.
-- Loudness integrado −13,5 LUFS, pico −1,3 dBFS em todos; trecho só de música (0,75–1,25 s) a −14,6 dB de média, ou seja, a trilha está presente e audível.
+- Loudness integrado ≈ −14,4 LUFS, true peak −1,3 dBTP; a trilha está presente e audível em todos os nove.
 - OCR de 1 a cada 3 quadros em três vídeos (16:9 EN, 9:16 PT-BR, 1:1 DE): nenhum telefone, e-mail, URL ou menção a WhatsApp.
 - Captura: a varredura de texto marcou só um quadro do pedido com o rótulo vazio "Telefone / WhatsApp" do formulário, que não entra na montagem.
 - Revisão visual por folhas de contato (`renders/restaurant/review/`).
 
 **Limitações:** as frases da lente são as do próprio site (uma delas tem emoji); o número do pedido e o cartão de teste mascarado (`**** 5682`) aparecem porque fazem parte da tela real; a etapa de dados do cliente foi digitada fora da câmera para não mostrar telefone nem endereço.
+
+## 10. Comercial para Instagram (Reels/Stories 9:16 e feed 4:5)
+
+Seis vídeos em `renders/instagram/` (`willdev-commercial-<9x16|4x5>-<en|pt-br|de>.mp4`): o comercial de 35 s recomposto para celular, com a mesma trilha, os mesmos cortes no compasso, as mesmas transições e o mesmo CTA neutro. 9:16 em 1080×1920; 4:5 em 1080×1350; 30 fps.
+
+Não é um recorte do 16:9: cada cena ganhou uma versão vertical (`src/scenes/vertical/`), escolhida pelo formato (`aspect` no contexto). O 16:9 continua exatamente como estava.
+
+| Cena | 16:9 | Vertical |
+| :- | :- | :- |
+| Abertura | pintura no centro, frases à esquerda e à direita | a pintura do interativMind (vertical por natureza) ocupa o quadro; 1ª frase em cima, 2ª embaixo, a linha neon desce pela margem e passa por baixo da pintura |
+| Lancheria | navegador à direita, palavras em pilha à esquerda | palavras na coluna da esquerda, o trilho num navegador de largura total, depois o celular do raio-X sobe grande na coluna da direita |
+| Hard Eletric | painel à esquerda, título à direita | título em cima, multímetro e quadro num painel 4:3 de largura quase total, etiqueta embaixo; a linha neon entra pela borda e vira a linha de alimentação do esquema |
+| VG | navegador e celular lado a lado | empilhados: navegador sob o título, celular sobrepondo o canto inferior direito |
+| interativMind | árvore à direita | a árvore (retrato) cresce grande sob o título |
+| Encerramento | selo à esquerda, oferta à direita | selo em cima, oferta, serviços e CTA embaixo |
+
+- Área segura dos Reels: textos entre ~210 e ~1560 px de altura (fora da barra superior e da legenda/botões); o selo do canto desce para 196 px. No feed, margens de 56 px.
+- Tipografia maior em relação ao quadro (títulos de 90–112 px em 1080 de largura), cada linha medida e reduzida só se não couber; no 9:16 a segunda frase da abertura fica numa linha só para não cair sobre o título da pintura.
+- Transições: as cortinas e o íris usam o tamanho real do quadro; o íris do interativMind abre do centro da árvore.
+- Conferido em alemão, o idioma de frases mais longas.

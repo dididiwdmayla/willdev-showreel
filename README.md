@@ -9,6 +9,7 @@ Vídeo promocional de 35 s da WillDev, feito em código: **Remotion** (React + T
 | Comercial para redes sociais, EN · PT-BR · DE | `renders/willdev-commercial-en.mp4`, `-pt-br.mp4`, `-de.mp4` |
 | Thumbnails 16:9 | `renders/thumbnail-1920x1080.png`, `renders/thumbnail-1280x720.png` |
 | Comercial de restaurante (Chapa Burger + Ingarandi), 3 formatos × 3 idiomas | `renders/restaurant/` (ver `restaurant/README.md`) |
+| Comercial para Instagram: Reels/Stories 9:16 e feed 4:5, EN · PT-BR · DE | `renders/instagram/` |
 | Relatório da produção | `REPORT.md` |
 
 1920×1080, 30 fps, H.264 + AAC, MP4 com `+faststart`, 35,0 s.
@@ -25,9 +26,19 @@ npm run render -- --commercials
 
 Com `--platform=fiverr`, o CTA final passa a ser o da plataforma. **Novo idioma:** copie `locales/en.ts` para `locales/<código>.ts`, traduza e registre em `locales/index.ts`; o comando acima passa a incluí-lo. As linhas medem o próprio texto e quebram ou reduzem o corpo só quando ele não cabe na coluna. Detalhes da localização em `REPORT.md` (seção 8).
 
+## Comercial para Instagram (9:16 e 4:5)
+
+O comercial de 35 s recomposto para celular: Reels/Stories em 1080×1920 e feed em 1080×1350, nos três idiomas. Cada cena tem uma versão vertical própria (`src/scenes/vertical/`), com telas mais próximas, conteúdo empilhado e texto dentro da área segura do Instagram.
+
+```bash
+npm run render -- --instagram
+```
+
+Só um formato ou idioma: `--aspect=9x16 --locale=pt-BR`. No Studio, as composições são `Showreel-9x16` e `Showreel-4x5`.
+
 ## Comercial de restaurante (Chapa Burger + Ingarandi)
 
-13,6 s em 16:9, 1:1 e 9:16, em EN, PT-BR e DE: as quatro variantes da Chapa Burger com a lente do cardápio, e a compra real do Ingarandi no ambiente de teste do Mercado Pago, fechando na moeda WillDev.
+13,6 s em 16:9, 1:1 e 9:16, em EN, PT-BR e DE: as quatro variantes da Chapa Burger com a lente do cardápio, e a compra real do Ingarandi no ambiente de teste do Mercado Pago, fechando na moeda WillDev. Trilha: "WillDev Burger Funk".
 
 ```bash
 npm run render -- --restaurant

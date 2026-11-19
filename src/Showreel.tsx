@@ -24,6 +24,8 @@ export const showreelSchema = z.object({
   locale: z.enum(Object.keys(locales) as [LocaleId, ...LocaleId[]]),
   /** Render without the soundtrack. */
   mute: z.boolean(),
+  /** 16:9 original, or the Instagram cuts: 9:16 (Reels/Stories) and 4:5 (feed). */
+  aspect: z.enum(['16x9', '9x16', '4x5']).optional(),
 });
 export type ShowreelProps = z.infer<typeof showreelSchema>;
 
@@ -37,6 +39,8 @@ const SCENES: Record<SceneId, React.FC<SceneProps>> = {
 };
 
 /** How each scene enters. Varied on purpose; the white edge is the brand's neon line. */
+const ENTRANCE_TALL: Partial<Record<SceneId, [number, number]>> = { interativmind: [540, 1140] };
+const ENTRANCE_FEED: Partial<Record<SceneId, [number, number]>> = { interativmind: [540, 830] };
 const ENTRANCE: Record<SceneId, { kind: WipeKind; origin?: [number, number] }> = {
   opening: { kind: 'none' },
   lancheria: { kind: 'right' },
@@ -69,20 +73,21 @@ const Soundtrack: React.FC = () => {
 };
 
 /** Small seal in the corner while the work is on screen; it hands over to the big one at the end. */
-const CornerSeal: React.FC<{ until: number }> = ({ until }) => {
+const CornerSeal: React.FC<{ until: number; aspect: '16x9' | '9x16' | '4x5' }> = ({ until, aspect }) => {
   const frame = useCurrentFrame();
   const t = ramp(frame, 18, 30, ease.out);
   const out = ramp(frame, until - 10, 10, ease.in);
   if (frame > until) return null;
   return (
-    <div style={{ position: 'absolute', right: 46, top: 38, opacity: 1 - out, filter: `drop-shadow(0 6px 18px rgba(0,0,0,0.6))` }}>
-      <Logo size={112} rings={t} mark={ramp(frame, 26, 16, ease.out)} word={ramp(frame, 32, 16, ease.out)} rule={ramp(frame, 36, 16)} arc={ramp(frame, 34, 40, ease.inOut)} glow={0.25} />
+    // Reels/Stories: below the platform's top bar; feed: tucked into the corner.
+    <div style={{ position: 'absolute', right: aspect === '9x16' ? 40 : aspect === '4x5' ? 30 : 46, top: aspect === '9x16' ? 196 : aspect === '4x5' ? 28 : 38, opacity: 1 - out, filter: `drop-shadow(0 6px 18px rgba(0,0,0,0.6))` }}>
+      <Logo size={aspect === '16x9' ? 112 : 104} rings={t} mark={ramp(frame, 26, 16, ease.out)} word={ramp(frame, 32, 16, ease.out)} rule={ramp(frame, 36, 16)} arc={ramp(frame, 34, 40, ease.inOut)} glow={0.25} />
     </div>
   );
 };
 
-export const Showreel: React.FC<ShowreelProps> = ({ platform, locale, mute }) => {
-  const settings = useMemo(() => settingsFor(platform, locale), [platform, locale]);
+export const Showreel: React.FC<ShowreelProps> = ({ platform, locale, mute, aspect = '16x9' }) => {
+  const settings = useMemo(() => settingsFor(platform, locale, aspect), [platform, locale, aspect]);
   const timeline = useMemo(() => buildTimeline(settings.platform.order, settings.platform.bars), [settings]);
   const closing = timeline.find((t) => t.id === 'closing')!;
   return (
@@ -101,13 +106,13 @@ export const Showreel: React.FC<ShowreelProps> = ({ platform, locale, mute }) =>
               from={entry.from}
               durationInFrames={entry.durationInFrames + (isLast ? 0 : TRANSITION_FRAMES)}
             >
-              <Wipe kind={i === 0 ? 'none' : enter.kind} origin={enter.origin} duration={TRANSITION_FRAMES}>
+              <Wipe kind={i === 0 ? 'none' : enter.kind} origin={(aspect === '9x16' ? ENTRANCE_TALL : aspect === '4x5' ? ENTRANCE_FEED : {})[entry.id] ?? enter.origin} duration={TRANSITION_FRAMES}>
                 <Scene durationInFrames={entry.durationInFrames} cue={entry.id === 'opening' ? (n) => bar(n) : cue} />
               </Wipe>
             </Sequence>
           );
         })}
-        <CornerSeal until={closing.from + 8} />
+        <CornerSeal until={closing.from + 8} aspect={aspect} />
         {!mute && <Soundtrack />}
       </AbsoluteFill>
     </ShowContext.Provider>

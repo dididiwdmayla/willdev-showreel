@@ -7,6 +7,7 @@ import { Line, ProjectTag } from '../components/Type';
 import { useShow } from '../context';
 import { ease, mix, ramp } from '../lib/anim';
 import { balance, type SceneProps } from './shared';
+import { InterativMindVertical } from './vertical/InterativMindVertical';
 
 const C = brand.colors;
 /** im-arvore: frame where the first young branch is set to mature (ink transition, blossoms). */
@@ -17,7 +18,7 @@ const CLIP = { w: 1184, h: 1390 };
 const INDIGO = '#1C2A48';
 
 /** 23–29 s: the knowledge tree grows from the ground, and two young branches mature into blossom. */
-export const InterativMindScene: React.FC<SceneProps> = ({ cue, durationInFrames }) => {
+const InterativMindSceneWide: React.FC<SceneProps> = ({ cue, durationInFrames }) => {
   const frame = useCurrentFrame();
   const { messages } = useShow();
   const m = messages.interativmind;
@@ -53,4 +54,10 @@ export const InterativMindScene: React.FC<SceneProps> = ({ cue, durationInFrames
       <ProjectTag label={m.label} kind={m.kind} at={18} out={durationInFrames - 6} style={{ left: 112, top: 700 }} />
     </AbsoluteFill>
   );
+};
+
+/** 16:9 keeps the original composition; the Instagram formats get their own (src/scenes/vertical/). */
+export const InterativMindScene: React.FC<SceneProps> = (props) => {
+  const { aspect } = useShow();
+  return aspect === '16x9' ? <InterativMindSceneWide {...props} /> : <InterativMindVertical {...props} />;
 };
