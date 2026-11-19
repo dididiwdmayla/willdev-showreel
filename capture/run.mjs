@@ -6,6 +6,8 @@ import { heQuadro, heCircuitos, heMultimetro } from './shots/hardeletric.mjs';
 import { lancheriaTrilho, lancheriaRaioX } from './shots/lancheria.mjs';
 import { vgDesktop, vgMobile } from './shots/vg.mjs';
 import { imEntrada, imArvore } from './shots/interativmind.mjs';
+import { chapaShots } from './shots/chapa.mjs';
+import { ingarandiShots } from './shots/ingarandi.mjs';
 
 const SHOTS = {
   'im-entrada': imEntrada,
@@ -17,6 +19,8 @@ const SHOTS = {
   'he-multimetro': heMultimetro,
   'vg-desktop': vgDesktop,
   'vg-mobile': vgMobile,
+  ...chapaShots,
+  ...ingarandiShots,
 };
 
 const wanted = process.argv.slice(2);

@@ -28,6 +28,22 @@ export const sources = {
     repo: path.join(SOURCES, 'vgconstru-o'),
     url: process.env.VG_URL ?? 'http://localhost:8102',
   },
+  // Chapa Burger: the Radar app (creatingmk1) from its own production build,
+  // rendered by its internal QA route. The route needs the app's session
+  // cookie, signed with the APP_PASSWORD the local server was started with.
+  chapa: {
+    repo: path.join(SOURCES, 'sources', 'scan', 'creatingmk1'),
+    url: process.env.CHAPA_URL ?? 'http://localhost:3200',
+    password: process.env.CHAPA_APP_PASSWORD ?? 'willdev-capture',
+  },
+  // Ingarandi Burger: a disposable copy of lancheriademonstracao wired to the
+  // Firestore emulator and to Mercado Pago TEST accounts (see capture/README.md).
+  // The browser sees it at INGARANDI_ORIGIN, mapped to the local server.
+  ingarandi: {
+    repo: path.join(SOURCES, 'sources', 'scan', 'lancheriademonstracao'),
+    origin: process.env.INGARANDI_ORIGIN ?? 'https://ingarandi-sandbox.test',
+    local: process.env.INGARANDI_LOCAL ?? 'http://localhost:3000',
+  },
   advocacia: {
     repo: path.join(SOURCES, 'advocaciademo'),
     url: process.env.ADVOCACIA_URL ?? 'http://localhost:8103',

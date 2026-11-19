@@ -8,6 +8,8 @@ import { CustomWebsites } from '../gallery/CustomWebsites';
 import { galleryLocaleSchema } from '../gallery/schema';
 import { Cover, coverSchema } from '../portfolio/Cover';
 import { ContraCover, contraSchema } from '../contra/ContraCover';
+import { Restaurant, restaurantSchema } from '../restaurant/Restaurant';
+import { DURATION as RESTAURANT_FRAMES, FPS as RESTAURANT_FPS, SIZES as RESTAURANT_SIZES } from '../restaurant/config';
 
 // One registration per deliverable; any platform/locale pair can also be rendered
 // from "Showreel" with props (see scripts/render.mjs and README.md).
@@ -49,6 +51,20 @@ export const RemotionRoot: React.FC = () => {
       {/* Contra service cover, 4:3 (contra/, rendered by `npm run contra`). */}
       <Still id="Contra-Cover" component={ContraCover} schema={contraSchema} width={1600} height={1200} defaultProps={{ variant: 'main' as const }} />
       <Still id="Contra-Cover-Alt" component={ContraCover} schema={contraSchema} width={1600} height={1200} defaultProps={{ variant: 'alt' as const }} />
+      {/* Restaurant commercial: Chapa Burger + Ingarandi, ≤ 14 s, three aspect ratios (restaurant/, `npm run render -- --restaurant`). */}
+      {(['16x9', '1x1', '9x16'] as const).map((aspect) => (
+        <Composition
+          key={aspect}
+          id={`Restaurant-${aspect}`}
+          component={Restaurant}
+          schema={restaurantSchema}
+          durationInFrames={RESTAURANT_FRAMES}
+          fps={RESTAURANT_FPS}
+          width={RESTAURANT_SIZES[aspect].width}
+          height={RESTAURANT_SIZES[aspect].height}
+          defaultProps={{ locale: 'en' as const, aspect, mute: false }}
+        />
+      ))}
     </>
   );
 };

@@ -39,6 +39,29 @@ export const en = {
     /** Marketplace variant: keeps the conversation on the platform. */
     ctaPlatform: 'Message me here on {platform}',
   },
+  /** Restaurant commercial (Chapa Burger + Ingarandi), ≤ 14 s, three aspect ratios. */
+  restaurant: {
+    hook: 'Menus you want to touch.',
+    hookKey: 'touch',
+    chapaLabel: 'Chapa Burger',
+    chapaKind: 'Burger-joint website · Concept',
+    variantsTitle: 'Four layouts. One menu.',
+    variants: {
+      chapa: 'Neighbourhood grill',
+      balcao: 'Lunch counter',
+      sala: 'Chef’s table',
+      praca: 'Food truck',
+    },
+    bridge: 'And a store that sells.',
+    bridgeKey: 'sells',
+    ingarandiLabel: 'Ingarandi Burger',
+    ingarandiKind: 'Online ordering · Client',
+    steps: ['Choose', 'Into the bag', 'Cart', 'Pay online', 'Mercado Pago', 'Paid'],
+    testBadge: 'Mercado Pago test environment',
+    closing: 'Websites that sell.',
+    closingKey: 'sell',
+    cta: 'Let’s build yours.',
+  },
   thumbnail: {
     line1: 'Websites that',
     line2: 'feel alive.',

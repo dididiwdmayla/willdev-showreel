@@ -54,7 +54,15 @@ const FORBIDDEN = [
 ];
 
 export async function launch() {
-  return chromium.launch({ args: ['--font-render-hinting=none', '--disable-lcd-text'] });
+  return chromium.launch({
+    args: [
+      '--font-render-hinting=none',
+      '--disable-lcd-text',
+      // The Ingarandi sandbox is served at a .test origin mapped to localhost
+      // and talks to the Firestore emulator on 127.0.0.1: allow that hop.
+      '--disable-features=BlockInsecurePrivateNetworkRequests,PrivateNetworkAccessSendPreflights,PrivateNetworkAccessRespectPreflightResults,LocalNetworkAccessChecks',
+    ],
+  });
 }
 
 /**
@@ -63,9 +71,9 @@ export async function launch() {
  */
 export async function openPage(
   browser,
-  { url, viewport, scale = 1, css = '', routes = [], reducedMotion = 'no-preference', frozen = false, isMobile = false, beforeGoto },
+  { url, viewport, scale = 1, css = '', routes = [], reducedMotion = 'no-preference', frozen = false, isMobile = false, beforeGoto, timezoneId, locale, idle = true },
 ) {
-  const context = await browser.newContext({ viewport, deviceScaleFactor: scale, reducedMotion, colorScheme: 'dark', isMobile, hasTouch: isMobile });
+  const context = await browser.newContext({ viewport, deviceScaleFactor: scale, reducedMotion, colorScheme: 'dark', isMobile, hasTouch: isMobile, timezoneId, locale });
   const page = await context.newPage();
   page.on('pageerror', (e) => console.warn('  [pageerror]', e.message.slice(0, 160)));
   for (const r of routes) await page.route(r.match, r.handler);
@@ -76,7 +84,7 @@ export async function openPage(
   if (beforeGoto) await beforeGoto(page);
   await page.goto(url, { waitUntil: 'load' });
   await page.addStyleTag({ content: HIDE_CONTACT_CSS + css });
-  await page.waitForLoadState('networkidle').catch(() => {});
+  if (idle) await page.waitForLoadState('networkidle').catch(() => {});
   await hideContactText(page);
   await page.evaluate(() => document.fonts.ready);
   return page;
